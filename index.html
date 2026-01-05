@@ -3,230 +3,161 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Menu QR - Nhà Hàng Của Bạn</title>
+  <title>Menu QR Pro - Đặt Món</title>
   <style>
     :root { 
-        --primary: #111;
-        --bg: #f6f7fb;
-        --border: #e8e8ee;
-        --text-muted: #666;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+        --primary: #d32f2f; 
+        --bg: #f8f9fa;
+        font-family: 'Segoe UI', Roboto, sans-serif;
     }
-    body { margin: 0; background: var(--bg); color: var(--primary); line-height: 1.5; }
-    header { position: sticky; top:0; z-index:100; background:white; border-bottom:1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-    .wrap { max-width: 900px; margin: 0 auto; padding: 12px; }
-    .topbar { display:flex; gap:10px; align-items:center; justify-content:space-between; }
-    .brand { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
-    .badge { background: var(--primary); color:#fff; padding:6px 14px; border-radius:999px; font-size:12px; font-weight: 600; }
-    .tabs { display:flex; gap:8px; overflow-x:auto; padding:10px 12px; border-top:1px solid #f0f0f6; scrollbar-width: none; }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab { flex:0 0 auto; border:1px solid #e4e4ef; background:#fff; padding:8px 16px; border-radius:999px; font-size:13px; cursor:pointer; transition: all 0.2s; font-weight: 500; }
-    .tab.active { background: var(--primary); color:#fff; border-color: var(--primary); }
-    .grid { display:grid; grid-template-columns: 1fr; gap:16px; margin-top: 10px; }
-    @media (min-width: 860px){ .grid { grid-template-columns: 1.8fr 1.2fr; align-items:start; } }
-    .card { background:#fff; border:1px solid var(--border); border-radius:20px; overflow:hidden; }
-    .card h2 { margin:0; padding:16px 16px 0; font-size:16px; font-weight: 700; }
-    .card .sub { padding:4px 16px 16px; color: var(--text-muted); font-size:13px; }
-    .section { padding: 0 16px 16px; }
-    .cat { margin-top: 10px; }
-    .cat-title { font-size:11px; color: var(--text-muted); text-transform:uppercase; letter-spacing:.08em; margin: 15px 0 10px; font-weight: 700; }
-    .item { display:flex; gap:12px; padding:12px; border:1px solid var(--border); border-radius:16px; margin-bottom:12px; transition: transform 0.1s; }
-    .item:active { transform: scale(0.98); }
-    .thumb { width:70px; height:70px; border-radius:12px; background:#f2f2f8; flex:0 0 auto; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size: 24px; }
-    .thumb img { width:100%; height:100%; object-fit:cover; }
-    .meta { flex:1 1 auto; min-width: 0; display:flex; flex-direction: column; justify-content: space-between; }
-    .name { font-weight:600; font-size:15px; margin:0 0 2px; }
-    .desc { margin:0; font-size:12px; color: var(--text-muted); }
-    .row { display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
-    .price { font-weight:700; font-size:15px; color: #d32f2f; }
-    .qty { display:flex; align-items:center; gap:10px; }
-    button { border:1px solid #e4e4ef; background:#fff; border-radius:10px; width: 32px; height: 32px; cursor:pointer; font-weight: bold; }
-    button.primary { background: var(--primary); color:#fff; border-color: var(--primary); }
-    button:disabled { opacity:.3; cursor:not-allowed; }
-    .cart { position: sticky; top: 80px; }
-    .cart-list { padding: 0 16px 10px; max-height: 40vh; overflow-y: auto; }
-    .cart-item { display:flex; justify-content:space-between; gap:10px; padding:12px 0; border-bottom:1px dashed #eee; }
-    .total { display:flex; justify-content:space-between; align-items:center; padding:16px; border-top:1px solid #f0f0f6; font-weight:800; font-size: 18px; }
-    .note { width:100%; box-sizing:border-box; border:1px solid #e4e4ef; border-radius:12px; padding:12px; font-size:13px; resize: none; background: #f9f9fb; }
-    .footer-actions{ display:flex; gap:10px; padding:16px; border-top:1px solid #f0f0f6; }
-    .footer-actions button { flex:1; height: 44px; width: auto; }
-    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 99px; font-size: 14px; opacity: 0; transition: opacity 0.3s; z-index: 1000; pointer-events: none; }
+    body { margin: 0; background: var(--bg); padding-bottom: 30px; }
+    header { background: white; border-bottom: 2px solid var(--primary); padding: 15px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .wrap { max-width: 600px; margin: 0 auto; padding: 0 15px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 20px; font-weight: 800; color: var(--primary); }
+    
+    .card { background: white; border-radius: 15px; padding: 15px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    h2 { font-size: 16px; margin: 0 0 10px 0; color: #333; }
+
+    /* Menu Items */
+    .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+    .item-name { font-weight: 600; display: block; }
+    .item-price { color: var(--primary); font-weight: 700; font-size: 14px; }
+    .btn-add { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+    /* Cart */
+    .cart-summary { background: #fff8f8; padding: 10px; border-radius: 8px; margin-bottom: 10px; min-height: 40px; }
+    .cart-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
+    textarea { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 10px; box-sizing: border-box; margin: 10px 0; }
+    
+    .btn-order { background: #1a1a1a; color: white; width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .btn-order:disabled { background: #ccc; }
   </style>
 </head>
 <body>
 
-<div id="toast">Đơn hàng đã được gửi!</div>
-
 <header>
   <div class="wrap">
     <div class="topbar">
-      <div>
-        <div class="brand">🍽️ MENU QR PRO</div>
-        <div style="color:var(--text-muted); font-size: 13px;">Bàn: <span id="tableId" style="font-weight:700; color:var(--primary)">---</span></div>
-      </div>
-      <div class="badge">🛒 <span id="cartCount">0</span> món</div>
+      <div class="brand">🏠 NHÀ HÀNG DELI</div>
+      <div style="font-size: 14px;">Bàn: <b id="displayTable">---</b></div>
     </div>
   </div>
-  <div class="tabs" id="tabs"></div>
 </header>
 
 <main class="wrap">
-  <div class="grid">
-    <section class="card">
-      <h2>Thực đơn</h2>
-      <div class="sub">Vui lòng chọn món ăn yêu thích</div>
-      <div class="section" id="menuList"></div>
-    </section>
+  <div class="card">
+    <h2>🍴 Danh sách món ăn</h2>
+    <div id="menuContent"></div>
+  </div>
 
-    <aside class="card cart">
-      <h2>Giỏ hàng của bạn</h2>
-      <div class="section">
-        <textarea class="note" id="note" rows="2" placeholder="Ghi chú thêm (vd: không hành, nhiều cay...)"></textarea>
-      </div>
-      <div class="cart-list" id="cartList"></div>
-      <div class="total">
-        <span>Tổng</span>
-        <span id="totalPrice" style="color:#d32f2f">0₫</span>
-      </div>
-      <div class="footer-actions">
-        <button id="clearBtn">Xoá</button>
-        <button class="primary" id="submitBtn">Đặt món ngay</button>
-      </div>
-    </aside>
+  <div class="card">
+    <h2>🛒 Giỏ hàng của bạn</h2>
+    <div id="cartList" class="cart-summary">Chưa chọn món nào...</div>
+    <div style="text-align: right; font-size: 18px; margin-bottom: 10px;">Tổng cộng: <b id="totalPrice" style="color: var(--primary);">0₫</b></div>
+    <textarea id="orderNote" rows="2" placeholder="Ghi chú: Thêm đá, ít hành, không cay..."></textarea>
+    <button id="submitBtn" class="btn-order" onclick="sendToTelegram()">XÁC NHẬN ĐẶT MÓN</button>
   </div>
 </main>
 
 <script>
-  // CẤU HÌNH TELEGRAM CỦA BẠN
-  const TELEGRAM_TOKEN = "8535455523:AAH5HsUE3INTWKayf9JeHsS6h7g4c4TQsjE";
-  const CHAT_ID = "1533009941";
+  // THÔNG TIN ĐÃ CẬP NHẬT CHÍNH XÁC
+  const TG_TOKEN = "8428955430:AAEvZ_8fM0yVbw7RiQ2XLuWcud3Bl48Hi48";
+  const TG_CHAT_ID = "1533009941";
 
   const MENU = [
-    {id:"p1", page:1, category:"Món Phở", name_vi:"Phở Bò Tái", description_vi:"Bò tươi thái mỏng ngon ngọt", price_vnd:45000, image_url:""},
-    {id:"p2", page:1, category:"Món Phở", name_vi:"Phở Gà Ta", description_vi:"Gà đi bộ, thịt chắc giòn", price_vnd:45000, image_url:""},
-    {id:"d1", page:2, category:"Đồ Uống", name_vi:"Cà Phê Đen", description_vi:"Cà phê rang xay nguyên chất", price_vnd:20000, image_url:""},
-    {id:"d2", page:2, category:"Đồ Uống", name_vi:"Trà Đá", description_vi:"Mát lạnh sảng khoái", price_vnd:5000, image_url:""}
+    { id: 1, name: "Phở Bò Tái", price: 45000 },
+    { id: 2, name: "Phở Gà Ta", price: 45000 },
+    { id: 3, name: "Bún Bò Huế", price: 50000 },
+    { id: 4, name: "Cà Phê Sữa", price: 25000 },
+    { id: 5, name: "Nước Cam Ép", price: 30000 }
   ];
 
-  const fmtVND = n => (n||0).toLocaleString("vi-VN") + "₫";
-  const qs = s => document.querySelector(s);
-  const CART_KEY = "menu_qr_data";
-  
+  let cart = {};
   const params = new URLSearchParams(location.search);
-  qs("#tableId").textContent = params.get("table") || "Mang về";
+  const table = params.get("table") || "Mang về";
+  document.getElementById("displayTable").innerText = table;
 
-  let cart = JSON.parse(localStorage.getItem(CART_KEY) || "{}");
-  let activePage = 1;
-
-  function renderTabs(){
-    const pages = [...new Set(MENU.map(m => m.page))].sort((a,b)=>a-b);
-    const tabs = qs("#tabs");
-    tabs.innerHTML = "";
-    pages.forEach(p=>{
-      const btn = document.createElement("button");
-      btn.className = "tab" + (p===activePage ? " active":"");
-      btn.textContent = "Nhóm " + p;
-      btn.onclick = ()=>{ activePage = p; renderTabs(); renderMenu(); };
-      tabs.appendChild(btn);
-    });
+  function renderMenu() {
+    document.getElementById("menuContent").innerHTML = MENU.map(item => `
+      <div class="item">
+        <div>
+          <span class="item-name">${item.name}</span>
+          <span class="item-price">${item.price.toLocaleString()}₫</span>
+        </div>
+        <button class="btn-add" onclick="addToCart(${item.id})">Thêm +</button>
+      </div>
+    `).join("");
   }
 
-  function setQty(id, delta){
-    cart[id] = (cart[id] || 0) + delta;
-    if(cart[id] <= 0) delete cart[id];
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    renderMenu();
-    renderCart();
-  }
-  window.__setQty = setQty;
-
-  function renderMenu(){
-    const list = qs("#menuList");
-    list.innerHTML = "";
-    const items = MENU.filter(m=>m.page===activePage);
-    const cats = [...new Set(items.map(m => m.category))];
-
-    cats.forEach(cat => {
-        list.innerHTML += `<div class="cat-title">${cat}</div>`;
-        items.filter(m => m.category === cat).forEach(m => {
-            const qty = cart[m.id] || 0;
-            list.innerHTML += `
-                <div class="item">
-                    <div class="thumb">🍲</div>
-                    <div class="meta">
-                        <div>
-                            <div class="name">${m.name_vi}</div>
-                            <div class="desc">${m.description_vi}</div>
-                        </div>
-                        <div class="row">
-                            <div class="price">${fmtVND(m.price_vnd)}</div>
-                            <div class="qty">
-                                <button ${qty===0?'disabled':''} onclick="__setQty('${m.id}',-1)">-</button>
-                                <span>${qty}</span>
-                                <button class="primary" onclick="__setQty('${m.id}',1)">+</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        });
-    });
-    qs("#cartCount").textContent = Object.values(cart).reduce((a, b) => a + b, 0);
+  function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    updateCart();
   }
 
-  function renderCart(){
-    const list = qs("#cartList");
+  function updateCart() {
+    const list = document.getElementById("cartList");
+    let html = "";
     let total = 0;
-    list.innerHTML = "";
-    
-    Object.entries(cart).forEach(([id, qty]) => {
-        const item = MENU.find(m => m.id === id);
-        if(!item) return;
-        total += item.price_vnd * qty;
-        list.innerHTML += `
-            <div class="cart-item">
-                <div><b>${item.name_vi}</b><br><small>${fmtVND(item.price_vnd)}</small></div>
-                <div>x${qty}</div>
-            </div>`;
+    const entries = Object.entries(cart);
+
+    if (entries.length === 0) {
+      list.innerHTML = "Chưa chọn món nào...";
+      document.getElementById("totalPrice").innerText = "0₫";
+      return;
+    }
+
+    entries.forEach(([id, qty]) => {
+      const item = MENU.find(m => m.id == id);
+      total += item.price * qty;
+      html += `<div class="cart-row"><span>${item.name} x${qty}</span><span>${(item.price * qty).toLocaleString()}₫</span></div>`;
     });
-    qs("#totalPrice").textContent = fmtVND(total);
+
+    list.innerHTML = html;
+    document.getElementById("totalPrice").innerText = total.toLocaleString() + "₫";
   }
 
-  function showToast(msg) {
-    const t = qs("#toast");
-    t.textContent = msg; t.style.opacity = "1";
-    setTimeout(() => t.style.opacity = "0", 3000);
-  }
+  async function sendToTelegram() {
+    if (Object.keys(cart).length === 0) return alert("Vui lòng chọn món!");
 
-  qs("#submitBtn").onclick = async () => {
-    if(Object.keys(cart).length === 0) return alert("Bạn chưa chọn món!");
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.innerText = "ĐANG GỬI ĐƠN...";
 
-    let text = `🔔 <b>ĐƠN HÀNG MỚI</b>\n📍 <b>Bàn:</b> ${qs("#tableId").textContent}\n`;
+    let text = `🔔 <b>ĐƠN HÀNG MỚI</b>\n`;
+    text += `📍 <b>Bàn:</b> ${table}\n`;
     text += `━━━━━━━━━━━━━\n`;
     Object.entries(cart).forEach(([id, qty]) => {
-        const item = MENU.find(m => m.id === id);
-        text += `• ${item.name_vi} x${qty}\n`;
+      const item = MENU.find(m => m.id == id);
+      text += `• ${item.name} x${qty}\n`;
     });
     text += `━━━━━━━━━━━━━\n`;
-    text += `💰 <b>Tổng: ${qs("#totalPrice").textContent}</b>\n`;
-    text += `📝 <b>Ghi chú:</b> ${qs("#note").value || "Không"}`;
+    text += `💰 <b>Tổng: ${document.getElementById("totalPrice").innerText}</b>\n`;
+    text += `📝 <b>Ghi chú:</b> ${document.getElementById("orderNote").value || "Không"}`;
 
     try {
-        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: "HTML" })
-        });
-        if(res.ok) {
-            showToast("✅ Đã đặt món thành công!");
-            cart = {}; localStorage.removeItem(CART_KEY);
-            qs("#note").value = ""; renderMenu(); renderCart();
-        } else { alert("Lỗi gửi đơn!"); }
-    } catch (e) { alert("Lỗi kết nối!"); }
-  };
+      const response = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text, parse_mode: "HTML" })
+      });
 
-  qs("#clearBtn").onclick = () => { cart = {}; localStorage.removeItem(CART_KEY); renderMenu(); renderCart(); };
+      const data = await response.json();
+      if (data.ok) {
+        alert("✅ Thành công! Đơn hàng đã được gửi tới bếp.");
+        cart = {}; document.getElementById("orderNote").value = ""; updateCart();
+      } else {
+        alert("❌ Lỗi Telegram: " + data.description);
+      }
+    } catch (e) {
+      alert("❌ Lỗi kết nối mạng!");
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "XÁC NHẬN ĐẶT MÓN";
+    }
+  }
 
-  renderTabs(); renderMenu(); renderCart();
+  renderMenu();
 </script>
 </body>
 </html>
