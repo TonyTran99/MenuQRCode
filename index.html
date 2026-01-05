@@ -253,7 +253,69 @@
     setTimeout(() => t.style.opacity = "0", 2500);
   }
 
-  qs("#submitBtn").onclick = () => {
+  qs("qs("#submitBtn").onclick = async () => {
+    if(Object.keys(cart).length === 0) return alert("Vui lòng chọn món!");
+
+    // 1. Lấy thông tin bàn và ghi chú
+    const tableId = qs("#tableId").textContent;
+    const note = qs("#note").value.trim();
+    
+    // 2. Tạo nội dung danh sách món ăn
+    let itemText = "";
+    let totalOrderPrice = 0;
+
+    Object.entries(cart).forEach(([id, qty]) => {
+        const item = MENU.find(m => m.id === id);
+        if (item) {
+            itemText += `+ ${item.name_vi}: ${qty} x ${fmtVND(item.price_vnd)}\n`;
+            totalOrderPrice += item.price_vnd * qty;
+        }
+    });
+
+    // 3. Soạn nội dung tin nhắn gửi về Telegram
+    const message = `
+🔔 ĐƠN HÀNG MỚI
+📍 Bàn: ${tableId}
+--------------------------
+${itemText}
+--------------------------
+💰 Tổng tiền: ${fmtVND(totalOrderPrice)}
+📝 Ghi chú: ${note || "Không có"}
+⏰ Lúc: ${new Date().toLocaleTimeString('vi-VN')}
+    `.trim();
+
+    // 4. Cấu hình Telegram (THAY THÔNG TIN CỦA BẠN TẠI ĐÂY)
+    const telegramToken = "8535455523:AAH5HsUE3INTWKayf9JeHsS6h7g4c4TQsjE"; 
+    const chatId = "1533009941";
+    const url = `https://api.telegram.org/bot${telegramToken}/sendMessage`;
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: "HTML" // Cho phép tin nhắn hiển thị đẹp hơn
+            })
+        });
+
+        if (response.ok) {
+            showToast("✅ Đã gửi đơn thành công!");
+            // Xóa giỏ hàng và ghi chú sau khi gửi
+            cart = {};
+            qs("#note").value = "";
+            localStorage.removeItem(CART_KEY);
+            localStorage.removeItem(NOTE_KEY);
+            renderMenu();
+            renderCart();
+        } else {
+            alert("Có lỗi xảy ra khi gửi đơn. Thử lại sau!");
+        }
+    } catch (error) {
+        alert("Lỗi kết nối! Kiểm tra mạng của bạn.");
+    }
+};").onclick = () => {
     if(Object.keys(cart).length === 0) return alert("Vui lòng chọn món!");
     
     const order = {
