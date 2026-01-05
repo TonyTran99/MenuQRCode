@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Menu QR Pro - Đặt Món & Theo Dõi</title>
+  <title>Deli Restaurant - Menu QR</title>
   <style>
     :root { 
         --primary: #d32f2f; 
@@ -19,7 +19,7 @@
     
     .card { background: white; border-radius: 15px; padding: 20px; margin-top: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     h2 { font-size: 17px; margin: 0 0 15px 0; border-left: 4px solid var(--primary); padding-left: 10px; }
-    .card.history-card { border-left: 4px solid var(--success); background: #f1f8e9; }
+    .history-card { border-left: 4px solid var(--success); background: #f1f8e9; }
 
     /* Menu Items */
     .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
@@ -39,8 +39,6 @@
     
     .btn-order { background: #1a1a1a; color: white; width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
     .btn-order:disabled { background: #ccc; }
-
-    .status-badge { font-size: 12px; background: var(--success); color: white; padding: 2px 8px; border-radius: 10px; float: right; }
   </style>
 </head>
 <body>
@@ -63,23 +61,23 @@
   <div class="card">
     <h2>🛒 Món đang chọn</h2>
     <div id="cartPreview" class="list-box">Chưa chọn món nào...</div>
-    <div style="text-align: right; font-weight: bold;">Tổng đơn mới: <span id="totalPrice" style="color: var(--primary);">0₫</span></div>
-    <textarea id="orderNote" rows="2" placeholder="Ghi chú thêm..."></textarea>
+    <div style="text-align: right; font-weight: bold; margin-bottom: 10px;">
+        Tổng đơn mới: <span id="totalPrice" style="color: var(--primary);">0₫</span>
+    </div>
+    <textarea id="orderNote" rows="2" placeholder="Ghi chú thêm (vd: ít hành, không cay...)"></textarea>
     <button id="submitBtn" class="btn-order" onclick="sendToTelegram()">XÁC NHẬN ĐẶT MÓN</button>
   </div>
 
   <div id="historyContainer" class="card history-card" style="display: none;">
-    <h2>✅ Món đã đặt (Đang chờ phục vụ)</h2>
+    <h2>✅ Món đã đặt (Chờ phục vụ)</h2>
     <div id="orderHistory" class="list-box"></div>
-    <div style="text-align: right; font-size: 13px; color: #555; margin-top: 10px;">
-        <i>Lưu ý: Nếu cần hủy món, vui lòng gọi nhân viên.</i>
-    </div>
   </div>
 </main>
 
 <script>
+  // THÔNG TIN ĐỊA CHỈ MỚI CỦA BẠN
   const TG_TOKEN = "8428955430:AAEvZ_8fM0yVbw7RiQ2XLuWcud3Bl48Hi48";
-  const TG_CHAT_ID = "1533009941";
+  const TG_CHAT_ID = "-5252831727";
 
   const MENU = [
     { id: 1, name: "Phở Bò Tái", price: 45000 },
@@ -90,7 +88,6 @@
   ];
 
   let cart = {};
-  // Lấy lịch sử món đã đặt từ bộ nhớ trình duyệt
   let historyOrders = JSON.parse(localStorage.getItem('ordered_items') || "[]");
 
   const params = new URLSearchParams(location.search);
@@ -138,41 +135,34 @@
     document.getElementById("totalPrice").innerText = total.toLocaleString() + "₫";
   }
 
-  // Hàm hiển thị lịch sử các món đã gửi đi
   function renderHistory() {
-    const historyDiv = document.getElementById("orderHistory");
     const container = document.getElementById("historyContainer");
-    
     if (historyOrders.length === 0) {
       container.style.display = "none";
       return;
     }
-
     container.style.display = "block";
-    historyDiv.innerHTML = historyOrders.map(item => `
-      <div class="list-item" style="border-bottom: 1px solid #c8e6c9;">
-        <span><b>${item.name}</b> x${item.qty}</span>
-        <span style="font-size: 11px; color: #666;">${item.time}</span>
-      </div>
-    `).reverse().join(""); // Đảo ngược để món mới nhất hiện lên đầu
+    document.getElementById("orderHistory").innerHTML = historyOrders.map(item => `
+      <div class="list-item"><span><b>${item.name}</b> x${item.qty}</span><small>${item.time}</small></div>
+    `).reverse().join("");
   }
 
   async function sendToTelegram() {
     if (Object.keys(cart).length === 0) return alert("Vui lòng chọn món!");
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
+    btn.innerText = "ĐANG GỬI...";
 
-    let text = `🔔 <b>ĐƠN HÀNG MỚI</b>\n📍 <b>Bàn:</b> ${table}\n━━━━━━━━━━━━━\n`;
     const currentTime = new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
     
+    // Soạn tin nhắn gửi về nhóm
+    let text = `🔔 <b>ĐƠN HÀNG MỚI</b>\n📍 <b>Bàn: ${table}</b>\n━━━━━━━━━━━━━\n👨‍🍳 <b>GỬI BẾP:</b>\n`;
     Object.entries(cart).forEach(([id, qty]) => {
       const item = MENU.find(m => m.id == id);
       text += `• ${item.name} x${qty}\n`;
-      // Lưu vào lịch sử cục bộ
       historyOrders.push({ name: item.name, qty: qty, time: currentTime });
     });
-
-    text += `━━━━━━━━━━━━━\n💰 <b>Tổng: ${document.getElementById("totalPrice").innerText}</b>\n📝 <b>Ghi chú:</b> ${document.getElementById("orderNote").value || "Không"}`;
+    text += `━━━━━━━━━━━━━\n📝 <b>GHI CHÚ:</b> ${document.getElementById("orderNote").value || "Không"}\n━━━━━━━━━━━━━\n💰 <b>TỔNG CỘNG: ${document.getElementById("totalPrice").innerText}</b>`;
 
     try {
       const res = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
@@ -181,18 +171,19 @@
         body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text, parse_mode: "HTML" })
       });
       if ((await res.json()).ok) {
-        alert("✅ Đã gửi đơn hàng thành công!");
-        // Lưu lịch sử vào localStorage
         localStorage.setItem('ordered_items', JSON.stringify(historyOrders));
         cart = {}; 
         document.getElementById("orderNote").value = "";
         renderMenu(); renderPreview(); renderHistory();
+        alert("✅ Đã gửi đơn thành công về nhóm quản lý!");
       }
-    } catch (e) { alert("Lỗi gửi đơn!"); }
-    finally { btn.disabled = false; }
+    } catch (e) { alert("Lỗi kết nối mạng!"); }
+    finally { 
+        btn.disabled = false; 
+        btn.innerText = "XÁC NHẬN ĐẶT MÓN";
+    }
   }
 
-  // Khởi tạo trang
   renderMenu();
   renderHistory();
 </script>
